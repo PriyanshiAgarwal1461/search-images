@@ -13,8 +13,6 @@ export const ModalImg = ({ isModalOpen, setIsModalOpen, imgUrl, setImgUrl }) => 
                     alt=""
                     width="450px"
                     height="450px"
-                
-
                 />
             </div>
 

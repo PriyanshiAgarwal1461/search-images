@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Row, Input, Button } from "antd";
-
 import "./SearchImg.css"
 import { ModalImg } from "./ModalImg";
 
@@ -13,6 +12,7 @@ export const SearchImg = () => {
     const [imgUrl, setImgUrl] = useState("")
     const [showSearchList, setShowSearchList] = useState(false)
 
+//fetch data when component is mounted
     useEffect(() => {
         const url = 'https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=8a913bc32727190d722fa16f7a0bdd56&per_page=10&format=json&nojsoncallback=1';
         axios.get(url)
@@ -24,11 +24,7 @@ export const SearchImg = () => {
             });
     }, []);
 
-    const handleImageClick = (url) => {
-        setIsModalOpen(true)
-        setImgUrl(url)
-    }
-
+    //fetch data when we search specific term
     function saveSearchQuery(query) {
         const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=8a913bc32727190d722fa16f7a0bdd56&text=${query}&per_page=10&format=json&nojsoncallback=1`;
         axios.get(url)
@@ -51,6 +47,8 @@ export const SearchImg = () => {
         setShowSearchList(false)
         setSearchTerm(query)
     }
+
+    //set data from local storage to searchquery when component is mounted
     useEffect(() => {
         const existingQueries = localStorage.getItem('searchQueries');
         if (existingQueries) {
@@ -58,16 +56,21 @@ export const SearchImg = () => {
         }
     }, []);
 
+    const handleImageClick = (url) => {
+        setIsModalOpen(true)
+        setImgUrl(url)
+    }
+
     const clearSearchList = () => {
         setSearchQueries([])
         localStorage.setItem('searchQueries', JSON.stringify([]))
         setShowSearchList(false)
         setSearchTerm("")
     }
-const handleSearchChnage = (e) =>{
-    setSearchTerm(e.target.value)
-    setShowSearchList(true)
-}
+    const handleSearchChnage = (e) => {
+        setSearchTerm(e.target.value)
+        setShowSearchList(true)
+    }
     return (
         <>
             <div>
@@ -81,29 +84,29 @@ const handleSearchChnage = (e) =>{
                             placeholder="Search images"
                             value={searchTerm}
                             type="text"
-                            onClick={()=>setShowSearchList(true)}
-                            onChange={(e)=>handleSearchChnage(e)}
+                            onClick={() => setShowSearchList(true)}
+                            onChange={(e) => handleSearchChnage(e)}
                             className="search-img"
                             onPressEnter={() => saveSearchQuery(searchTerm)}
                         />
-                        {showSearchList ? 
-                       ( <div className="search-tag">
-                            {searchQueries.map((searchQuery, index) => (
-                                <div
-                                    key={index}
-                                    onClick={() => saveSearchQuery(searchQuery)}
-                                >
-                                    {searchQuery}
-                                </div>
-                            ))}
-                            <div className="clearBtnBox">
-                                <Button className="clearBtn" onClick={clearSearchList}>Clear</Button>
+                        {showSearchList ?
+                            (<div className="search-tag">
+                                {searchQueries.map((searchQuery, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => saveSearchQuery(searchQuery)}
+                                    >
+                                        {searchQuery}
+                                    </div>
+                                ))}
+                                <div className="clearBtnBox">
+                                    <Button className="clearBtn" onClick={clearSearchList}>Clear</Button>
 
-                            </div>
-                        </div>) : null}
+                                </div>
+                            </div>) : null}
                     </div>
                 </Row>
-                <Row className="photo-container" onClick={()=>setShowSearchList(false)}>
+                <Row className="photo-container" onClick={() => setShowSearchList(false)}>
                     {photos.map(photo => (
                         <img key={photo.id}
                             src={`https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`}
